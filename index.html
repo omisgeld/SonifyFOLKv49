@@ -1,0 +1,134 @@
+<!doctype html>
+
+
+<!--
+
+<h2>Click and slide to play</h2>
+<ul>
+	<li>Pointer relative X position controls pitch</li>
+	<li>Pointer relative Y position controls cutoff frequency of biquad filter</li>
+</ul>
+<p>WebAudioXML is a javascript library that makes it possible to create
+	Web Audio applications using XML syntax. It is a PhD research project by
+	Hans Lindetorp. Please follow me on
+	<a href="https://hans.arapoviclindetorp.se">https://hans.arapoviclindetorp.se</a> and
+	<a href="https://www.facebook.com/hanslindetorpresearch/">https://www.facebook.com/hanslindetorpresearch/</a>
+</p>
+
+-->
+
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, user-scalable=no" />
+		<title>SonifyFOLK - by Lindetorp and Misgeld</title>
+		<script src="script/NormalDistribution.js"></script>
+		<script src="script/max.size.js"></script>
+		<script src="script/JSONCrush.min.js"></script>
+
+		<link rel="stylesheet" href="styles/style.css" />
+		<link rel="stylesheet" href="styles/multirange.css" />
+
+	</head>
+
+
+	<body>
+		<div id="container">
+			<h1>SonifyFOLK - by Hans Lindetorp and Olof Misgeld</h1>
+			<button id="newBtn">NEW</button>
+			<button id="openBtn">OPEN</button>
+			<button id="saveBtn">SAVE</button>
+			<button id="shareBtn">SHARE</button>
+			<!--button id="statisticsBtn">STATISTICS</button-->
+			<!-- <button id="displayModeBtn">Display Mode</button> -->
+			<select>
+				<option value="">Preset...</option>
+				<option value="https://tinyurl.com/5apm7ywd">Svikt and stomp</option>
+				<option value="https://tinyurl.com/yc7v3fdj">Svikt-speed and stomp</option>
+				<option value="https://tinyurl.com/7mrsw3rh">Feet Speed Wind</option>
+				<option value="https://tinyurl.com/3tc9kp5b">Svikt Harmonics</option>
+			</select>
+
+
+			<video controls loop webkit-playsinline playsinline>
+				<source src="video/Side1.mp4" />
+			</video>
+
+		
+			<div id="visual-output">
+				<canvas width="20000" height="200"></canvas>
+				<div id="positionPointer"></div>
+				<div id="blobs"></div>
+			</div>
+			<!-- <button onclick="javascript: webAudioXML.init()">INIT AUDIO</button> -->
+			<div id="controls">
+				<input type="range" min="0" max="1" value="0" step="0.001" class="slider" id="scrub" />
+			
+				<button class="controls" id="reverseBtn">REVERSE</button>
+				<button class="controls" id="stopBtn">STOP</button>
+				<button class="controls" id="playBtn">PLAY</button>
+				<span class="controls"><input id="duration" value="60" /> s.</span>
+
+				<button id="zoomOutBtn">-</button>
+				<button id="zoomInBtn">+</button>	
+				<label>Recorded audio: <input id="video-sound" checked type="checkbox" /></label>
+			</div>
+
+			<span id="input-label">Data Range:</span>
+			<span id="output-label">Parameter Range:</span>		
+
+			<div id="variables"></div>
+			<div id="instruction">
+				<p> DO YOU WANT TO CONTRIBUTE to RESEARCH on MUSIC and DANCE? Please SAVE your sonification and paste it in the <a target="_blank"href="https://forms.gle/7ZxRjuqtH7pj5ygDA">SURVEY!</a> The motion capture data was recorded in the PMIL-studio at KTH, Stockholm by the violin player Olof Misgeld and with the dancers Ami Dregelid and Andreas Berchtold.
+				</p>
+				<h2>Quick Start (currently support for FireFox and Chrome):</h2>
+				<ol>
+					<li>Select a data source</li>
+					<li>Select and Audio Object</li>
+					<li>Select a parameter</li>
+					<li>Play or scrub to listen</li>
+					<li>Adjust the ranges</li>
+					<li>Add more parameters and/or data sources</li>
+				</ol>
+				<h2>Configure data and sound model:</h2>
+				<ol>
+					<li>Download the <a target="_blank" href="https://github.com/omisgeld/SonifyFOLK">Source Files</a></li>
+					<li>Replace the data with your own by updating the <a href="data.csv">data.csv</a>-file (follow the provided data-structure)</li>
+					<li>Replace the audio configuration by editing the <a href="audio.xml">audio.xml</a>-file (more info at <a href="https://github.com/hanslindetorp/WebAudioXML">https://github.com/hanslindetorp/WebAudioXML</a>)</li>
+					<li>Run your version on a local server or upload the files somewhere</li>
+				</ol>
+				<h3>DEMO videos</h3>
+				<h3>Published article and presentation WebAudioXML Sonification ToolKit - By Hans Lindetorp:</h3>
+				<p><a href="https://icad2021.icad.org/wp-content/uploads/2021/06/ICAD_2021_9.pdf"></a></p>
+				<iframe width="560" height="315" src="https://www.youtube.com/embed/UFLflql1NYM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				<p>Find more projects relating to my research on my <a href="https://github.com/hanslindetorp">GitHub page</a></p>
+			</div>
+
+			<div id="data-input-container" class="data-container">
+				<button class="loadBtn">OK</button>
+				<button class="closeBtn">Cancel</button>
+				<textarea></textarea>
+			</div>
+			<div id="data-output-container" class="data-container">
+				<button class="closeBtn">X</button>
+				<textarea id="outputText"></textarea>
+			</div>
+		</div>
+
+		<script src="script/multirange.js"></script>
+
+		<script src="script/WebAudioXML.js" data-source="audio.xml"></script>
+		<script src="script/main.js" data-source="configuration.js"></script>
+
+
+		<script>
+			document.querySelector("#container > select").addEventListener("change", e => {
+				window.location.href = e.target.value;
+			});
+			document.querySelector("#video-sound").addEventListener("change", e => {
+				document.querySelector("video").volume = e.target.checked ? 0.2 : 0;
+			});
+			document.querySelector("video").volume = 0.2;
+		</script>
+	</body>
+</html>

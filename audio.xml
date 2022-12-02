@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Audio version="1.0" timeUnit="ms" gain="0" transitionTime="60">
+
+	<!--
+	This simple oscillator configuration uses a sawtooth
+	waveform and plays through a lowpass filter and a gainnode.
+	-->
+
+	<Chain id="Oscillator1">
+		<var name="pitch" default="60" mapin="33, 80" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="brightness" default="1000" mapin="50,10000" curve="3"></var>
+		<var name="volume" default="0" mapin="-30, 10" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+
+		<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="60"></OscillatorNode>
+		<BiquadFilterNode frequency="$brightness"></BiquadFilterNode>
+		<GainNode gain="-1dB"></GainNode>
+		<GainNode class="sub" gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Oscillator2">
+		<var name="pitch" default="52" mapin="33, 80" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="brightness" default="1000" mapin="50,10000" curve="3"></var>
+		<var name="volume" default="0" mapin="-30, 10" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+
+		<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="60"></OscillatorNode>
+		<BiquadFilterNode frequency="$brightness"></BiquadFilterNode>
+		<GainNode gain="-1dB"></GainNode>
+		<GainNode class="sub" gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Oscillator3">
+		<var name="pitch" default="48" mapin="33, 80" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="brightness" default="1000" mapin="50,10000" curve="3"></var>
+		<var name="volume" default="0" mapin="-30, 10" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+
+		<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="10"></OscillatorNode>
+		<BiquadFilterNode frequency="$brightness"></BiquadFilterNode>
+		<GainNode gain="-1dB"></GainNode>
+		<GainNode class="sub" gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Oscillator4">
+		<var name="pitch" default="45" mapin="33, 80" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="brightness" default="1000" mapin="50,10000" curve="3"></var>
+		<var name="volume" default="0" mapin="-30, 10" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+
+		<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="60"></OscillatorNode>
+		<BiquadFilterNode frequency="$brightness"></BiquadFilterNode>
+		<GainNode gain="-1dB"></GainNode>
+		<GainNode class="sub" gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+<!-- Den här skickar sawtooth till en envelope på crest och through samt triggar ljudfiler på dessa.
+Whatever är lika med kurvan. Välj start=velocity.crest etc för att få triggning var velocity, men whatever måste vara aktiverat -->
+<Mixer id="Blippblopp1" gain="-6dB">
+		<var name="crest" mapin="0,1"></var>
+		<var name="trough" mapin="0,1"></var>
+		<var name="pitch" default="40" mapin="33, 100" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+		<var name="crestattack" default="0.1" mapin="0.01,1"></var>
+		<var name="crestrelease" default="50" mapin="10,200"></var>
+		<var name="troughattack" default="0.2" mapin="0.1,1"></var>
+		<var name="troughrelease" default="75" mapin="10,200"></var>
+
+	<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="60" output=".filter"></OscillatorNode>
+	<Chain>
+		<BiquadFilterNode class="filter">
+			<frequency>
+				<envelope times="$crestattack*$crestrelease, $crestattack*($crestrelease-($crestattack*$crestrelease))+$crestattack*$crestrelease, $crestrelease, $crestrelease*1.05" values="100, 20, 20, 0" start="crest.crest" max="5000"></envelope>
+			</frequency>
+		</BiquadFilterNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+	<Chain>
+		<BiquadFilterNode class="filter">
+			<frequency>
+				<envelope times="$troughattack*$troughrelease, $troughattack*($troughrelease-($troughattack*$troughrelease))+$troughattack*$troughrelease, $troughrelease, $troughrelease*1.05" values="100, 20, 20, 0" start="trough.trough" max="5000"></envelope>
+			</frequency>
+		</BiquadFilterNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+</Mixer>
+
+	<Mixer id="Blippblopp2" gain="-6dB">
+		<var name="crest" mapin="0,1"></var>
+		<var name="trough" mapin="0,1"></var>
+		<var name="pitch" default="45" mapin="33, 100" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+		<var name="crestattack" default="0.1" mapin="0.01,1"></var>
+		<var name="crestrelease" default="50" mapin="10,200"></var>
+		<var name="troughattack" default="0.2" mapin="0.1,1"></var>
+		<var name="troughrelease" default="75" mapin="10,200"></var>
+
+		<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="60" output=".filter"></OscillatorNode>
+		<Chain>
+			<BiquadFilterNode class="filter">
+				<frequency>
+					<envelope times="$crestattack*$crestrelease, $crestattack*($crestrelease-($crestattack*$crestrelease))+$crestattack*$crestrelease, $crestrelease, $crestrelease*1.05" values="100, 20, 20, 0" start="crest.crest" max="5000"></envelope>
+				</frequency>
+			</BiquadFilterNode>
+			<StereoPannerNode pan="$panning"></StereoPannerNode>
+		</Chain>
+		<Chain>
+			<BiquadFilterNode class="filter">
+				<frequency>
+					<envelope times="$troughattack*$troughrelease, $troughattack*($troughrelease-($troughattack*$troughrelease))+$troughattack*$troughrelease, $troughrelease, $troughrelease*1.05" values="100, 20, 20, 0" start="trough.trough" max="5000"></envelope>
+				</frequency>
+			</BiquadFilterNode>
+			<StereoPannerNode pan="$panning"></StereoPannerNode>
+		</Chain>
+	</Mixer>
+
+	<Mixer id="Blippblopp3" gain="-6dB">
+		<var name="crest" mapin="0,1"></var>
+		<var name="trough" mapin="0,1"></var>
+		<var name="pitch" default="52" mapin="33, 100" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+		<var name="crestattack" default="0.1" mapin="0.01,1"></var>
+		<var name="crestrelease" default="50" mapin="10,200"></var>
+		<var name="troughattack" default="0.2" mapin="0.1,1"></var>
+		<var name="troughrelease" default="75" mapin="10,200"></var>
+
+		<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="60" output=".filter"></OscillatorNode>
+		<Chain>
+			<BiquadFilterNode class="filter">
+				<frequency>
+					<envelope times="$crestattack*$crestrelease, $crestattack*($crestrelease-($crestattack*$crestrelease))+$crestattack*$crestrelease, $crestrelease, $crestrelease*1.05" values="100, 20, 20, 0" start="crest.crest" max="5000"></envelope>
+				</frequency>
+			</BiquadFilterNode>
+			<StereoPannerNode pan="$panning"></StereoPannerNode>
+		</Chain>
+		<Chain>
+			<BiquadFilterNode class="filter">
+				<frequency>
+					<envelope times="$troughattack*$troughrelease, $troughattack*($troughrelease-($troughattack*$troughrelease))+$troughattack*$troughrelease, $troughrelease, $troughrelease*1.05" values="100, 20, 20, 0" start="trough.trough" max="5000"></envelope>
+				</frequency>
+			</BiquadFilterNode>
+			<StereoPannerNode pan="$panning"></StereoPannerNode>
+		</Chain>
+		</Mixer>
+
+	<Mixer id="Blippblopp4" gain="-6dB">
+		<var name="crest" mapin="0,1"></var>
+		<var name="trough" mapin="0,1"></var>
+		<var name="pitch" default="57" mapin="33, 100" steps="0,2,3,5,7,9,10,12" convert="MIDI->frequency"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+		<var name="crestattack" default="0.1" mapin="0.01,1"></var>
+		<var name="crestrelease" default="50" mapin="10,200"></var>
+		<var name="troughattack" default="0.2" mapin="0.1,1"></var>
+		<var name="troughrelease" default="75" mapin="10,200"></var>
+
+		<OscillatorNode type="sawtooth" frequency="$pitch" transitionTime="60" output=".filter"></OscillatorNode>
+		<Chain>
+			<BiquadFilterNode class="filter">
+				<frequency>
+					<envelope times="$crestattack*$crestrelease, $crestattack*($crestrelease-($crestattack*$crestrelease))+$crestattack*$crestrelease, $crestrelease, $crestrelease*1.05" values="100, 20, 20, 0" start="crest.crest" max="5000"></envelope>
+				</frequency>
+			</BiquadFilterNode>
+			<StereoPannerNode pan="$panning"></StereoPannerNode>
+		</Chain>
+		<Chain>
+			<BiquadFilterNode class="filter">
+				<frequency>
+					<envelope times="$troughattack*$troughrelease, $troughattack*($troughrelease-($troughattack*$troughrelease))+$troughattack*$troughrelease, $troughrelease, $troughrelease*1.05" values="100, 20, 20, 0" start="trough.trough" max="5000"></envelope>
+				</frequency>
+			</BiquadFilterNode>
+			<StereoPannerNode pan="$panning"></StereoPannerNode>
+		</Chain>
+	</Mixer>
+
+	<!-- Varje NoiseN spelar whitenoise med som lägsta frekvens tonerna C, D, E, A, Ckvart
+	filterfrekvenser hämtade härifrån https://pages.mtu.edu/~suits/notefreqs.html
+	Kombinera med volym (invereterat) och Q-värde (invereterat) för att få högt
+	Q-värde = distinkt ton på låga värden (landningar) : -->
+
+	<Chain id="Noise1">
+		<var name="filterfreq" default="200" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Noise2">
+		<var name="filterfreq" default="300" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Noise3">
+		<var name="filterfreq" default="400" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Noise4">
+		<var name="filterfreq" default="500" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="OVERTONE_Vn_Low_A">
+		<var name="overtone" default="10000" mapin="69,105" mapout="69,76,81,84.86,88,90.69,93,95,96.86,98.51,100,101.41,102.7,103.88,105" curve="step" convert="MIDI->frequency"></var>
+		<!-- mapout="69,76,81,84.86,88,90.69,93,95,96.86,98.51,100,101.41,102.7,103.88,105" -->
+		<var name="volume" default="12" mapin="0,15" mapout="-30,6" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AmbientAudio src="audio/Vn_Low_A.mp3" crossFade="0.1" output=".filter"></AmbientAudio>
+		<BiquadFilterNode class="filter" type="bandpass" frequency="$overtone" Q="50" transitionTime="60"></BiquadFilterNode>
+		<GainNode gain="+20dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="OVERTONE_Vn_Low_G">
+		<var name="overtone" default="10000" mapin="67,103" mapout="67,74,79,82.86,86,88.69,91,93,94.86,96.51,98,99.41,100.7,101.88,103" curve="step" convert="MIDI->frequency"></var>
+		<var name="volume" default="12" mapin="0,15" mapout="-30,6" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AmbientAudio src="audio/Vn_Low_G.mp3" crossFade="0.1" output=".filter"></AmbientAudio>
+		<BiquadFilterNode class="filter" type="bandpass" frequency="$overtone" Q="50" transitionTime="60"></BiquadFilterNode>
+		<GainNode gain="+28dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="OVERTONE_Vn_Low_E">
+		<var name="overtone" default="10000" mapin="76,112" mapout="76,83,88,91.86,95,98,100,102,104,105.51,107,108.41,110,110.88,112" curve="step" convert="MIDI->frequency"></var>
+		<var name="volume" default="12" mapin="0,15" mapout="-30,6" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AmbientAudio src="audio/Vn_Low_E.mp3" crossFade="0.1" output=".filter"></AmbientAudio>
+		<BiquadFilterNode class="filter" type="bandpass" frequency="$overtone" Q="50" transitionTime="60"></BiquadFilterNode>
+		<GainNode gain="+20dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="OVERTONE_Vn_Low_D">
+		<var name="overtone" default="10000" mapin="74,110" mapout="74,81,86,89.86,93,95.69,98,100,101.86,103.51,105,106.41,107.7,108.88,110" curve="step" convert="MIDI->frequency"></var>
+		<var name="volume" default="12" mapin="0,15" mapout="-30,6" convert="dB->power"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AmbientAudio src="audio/Vn_Low_D.mp3" crossFade="0.1" output=".filter"></AmbientAudio>
+		<BiquadFilterNode class="filter" type="bandpass" frequency="$overtone" Q="50" transitionTime="60"></BiquadFilterNode>
+		<GainNode gain="+20dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="TriggerFIOLAE" gain="3dB" transitionTime="1">
+		<!-- <var name="volume" default="0" mapin="-30, 0" convert="dB->power"></var> -->
+		<var name="crest" mapin="0,1"></var>
+		<var name="trough" mapin="0,1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+		<ObjectBasedAudio start="trough.trough" src="audio/Vn_Low_A_SHORT.mp3">></ObjectBasedAudio>
+		<ObjectBasedAudio start="crest.crest" src="audio/Vn_Mid_E_SHORT.mp3"></ObjectBasedAudio>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Noise5">
+		<var name="filterfreq" default="500" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Noise6">
+		<var name="filterfreq" default="500" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Noise7">
+		<var name="filterfreq" default="500" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+
+	<Chain id="Noise8">
+		<var name="filterfreq" default="500" mapin="32, 10000" curve="2"></var>
+		<var name="volume" default="0" mapin="-40, 10" convert="dB->power"></var>
+		<var name="Q" default="70" mapin="0.1,100" curve="1"></var>
+		<var name="panning" default="0" mapin="-1,1"></var>
+
+		<AudioWorkletNode src="script/white-noise-processor.js"></AudioWorkletNode>
+		<BiquadFilterNode type="bandpass" frequency="$filterfreq" Q="$Q"></BiquadFilterNode>
+		<GainNode gain="+3dB"></GainNode>
+		<GainNode gain="$volume"></GainNode>
+		<StereoPannerNode pan="$panning"></StereoPannerNode>
+	</Chain>
+	<!-- brus från stråke på kanten på fiol, behöver testas mer.-->
+
+		<!-- <Chain id="Ambient_VnKantBrus">
+			<var name="brightness" default="1000" mapin="20,20000" curve="3"></var>
+			<var name="highpass" default="1000" mapin="20,20000" curve="3"></var>
+			<var name="thinness" default="1000" mapin="20,1000" curve="3"></var>
+			<var name="volume" default="15" mapin="0,15" mapout="-30,6" convert="dB->power"></var> -->
+
+			<!-- <AmbientAudio src="audio/VnKantBrus.mp3" crossFade="0.3"></AmbientAudio> -->
+
+			<!-- <BiquadFilterNode type="bandpass" frequency="$brightness" Q="70"></BiquadFilterNode> -->
+			<!-- <BiquadFilterNode type="highpass" frequency="$highpass" Q="10"></BiquadFilterNode>
+			<BiquadFilterNode type="lowpass" frequency="$thinness" Q="10"></BiquadFilterNode>
+			<GainNode gain="+3dB"></GainNode>
+			<GainNode gain="$volume"></GainNode> -->
+			<!-- transitionTime="60" -->
+		<!-- </Chain> -->
+
+
+</Audio>
